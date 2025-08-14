@@ -9,7 +9,7 @@ services:
       - 8080:8080
 
   db:
-    image: mysql
+    image: mysql:8
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: Secret5555
@@ -33,5 +33,5 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=10.172.27.9,nolock,soft,rw
-      device: :/mnt/mysql-data
+      o: "addr=10.172.27.9,nolock,soft,rw,proto=tcp,vers=3"
+      device: ":/mnt/mysql-data"
