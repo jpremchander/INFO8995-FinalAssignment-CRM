@@ -1,0 +1,65 @@
+{{- if .Values.crm.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "django-crm.fullname" . }}-crm
+  labels:
+    {{- include "django-crm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: crm
+  {{- with .Values.crm.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.crm.service.type }}
+  ports:
+    - port: {{ .Values.crm.service.port }}
+      targetPort: {{ .Values.crm.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "django-crm.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: crm
+{{- end }}
+
+---
+{{- if .Values.mysql.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "django-crm.fullname" . }}-mysql
+  labels:
+    {{- include "django-crm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql
+spec:
+  type: {{ .Values.mysql.service.type }}
+  ports:
+    - port: {{ .Values.mysql.service.port }}
+      targetPort: {{ .Values.mysql.service.targetPort }}
+      protocol: TCP
+      name: mysql
+  selector:
+    {{- include "django-crm.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql
+{{- end }}
+
+---
+{{- if .Values.adminer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "django-crm.fullname" . }}-adminer
+  labels:
+    {{- include "django-crm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: adminer
+spec:
+  type: {{ .Values.adminer.service.type }}
+  ports:
+    - port: {{ .Values.adminer.service.port }}
+      targetPort: {{ .Values.adminer.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "django-crm.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: adminer
+{{- end }}

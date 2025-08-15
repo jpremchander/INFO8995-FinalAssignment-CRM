@@ -1,0 +1,53 @@
+{{- if .Values.mysql.persistence.enabled }}
+{{- if .Values.mysql.persistence.nfs.enabled }}
+# NFS PersistentVolume for TrueNAS storage
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "django-crm.fullname" . }}-mysql-nfs-pv
+  labels:
+    {{- include "django-crm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql-storage
+spec:
+  capacity:
+    storage: {{ .Values.mysql.persistence.size }}
+  accessModes:
+    - {{ .Values.mysql.persistence.accessMode }}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  nfs:
+    server: {{ .Values.mysql.persistence.nfs.server }}
+    path: {{ .Values.mysql.persistence.nfs.path }}
+  mountOptions:
+    - nfsvers=3
+    - proto=tcp
+    - nolock
+    - soft
+    - rw
+
+---
+{{- end }}
+# MySQL PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "django-crm.fullname" . }}-mysql-pvc
+  labels:
+    {{- include "django-crm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql-storage
+spec:
+  accessModes:
+    - {{ .Values.mysql.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.mysql.persistence.size }}
+  {{- if .Values.mysql.persistence.storageClass }}
+  storageClassName: {{ .Values.mysql.persistence.storageClass }}
+  {{- end }}
+  {{- if .Values.mysql.persistence.nfs.enabled }}
+  selector:
+    matchLabels:
+      {{- include "django-crm.labels" . | nindent 6 }}
+      app.kubernetes.io/component: mysql-storage
+  {{- end }}
+{{- end }}

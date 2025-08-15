@@ -22,8 +22,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'j1c=6$s-dh#$ywt@(q4cm=j&0c*!0x!e-qm6k1%yoliec(15tn'
 
 # Add your hosts to the list.
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'codespace-dev.k3p.dev']
-CSRF_TRUSTED_ORIGINS=['https://codespace-dev.k3p.dev']
+# Add your public hostnames (Cloudflare/Codespace) here too
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'codespace-dev.k3p.dev',
+    'codespace.premchanderj.me',
+    'dev-codespace.premchanderj.me',
+]
+CSRF_TRUSTED_ORIGINS = [
+    'https://codespace-dev.k3p.dev',
+    'https://codespace.premchanderj.me',
+    'https://dev-codespace.premchanderj.me',
+]
 # Database
 DATABASES = {
     'default': {

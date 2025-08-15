@@ -7,6 +7,9 @@ services:
     - db
     ports:
       - 8080:8080
+    volumes:
+      # Bind-mount settings for quick updates without rebuilds
+      - ./settings.py:/app/webcrm/settings.py:ro
 
   db:
     image: mysql:8
